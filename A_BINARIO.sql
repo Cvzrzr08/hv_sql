@@ -180,22 +180,58 @@
 
 
 --SELECT * FROM [dbo].[Orders]
-SELECT 
-	[o].order_number
-	,[o].order_date
-	--,[od].*				--imprimiendo todo los campos de [OrderDetails] /ORDEN EN QUE IMPRIMIRA EL RESULTADO DE LA CONSULTA
-	,[od].[orderDetail_number]
-	,[od].[orderDetail_quantity]
-	,[od].[orderDetail_price]
-	,[p].[product_description]
-	,[m].[measure_description]
-FROM 
-	[dbo].[Orders] AS [o]
-		INNER JOIN [dbo].[OrderDetails] AS [od]
-		ON [o].[order_id] = [od].[order_id]
-		INNER JOIN [dbo].[Products] AS [p]	--AVERIGUANDO QUE PRODUCTOS LLEVA PK->FK
-		ON [od].[product_id] = [p].[product_id]
-		INNER JOIN [dbo].[Measures] AS [m]	--Añadiendo unidad de medida PK->FK
-		ON [od].[measure_id] = [m].[measure_id]
-WHERE
-[o].[order_id]=1;
+--USE A_BINARIO;
+--SELECT 
+--	[o].order_number
+--	,[o].order_date
+--	--,[od].*				--imprimiendo todo los campos de [OrderDetails] /ORDEN EN QUE IMPRIMIRA EL RESULTADO DE LA CONSULTA
+--	,[od].[orderDetail_number]
+--	,[od].[orderDetail_quantity]
+--	,[od].[orderDetail_price]
+--	,[p].[product_description]
+--	,[m].[measure_description]
+--FROM 
+--	[dbo].[Orders] AS [o]
+--		INNER JOIN [dbo].[OrderDetails] AS [od]
+--		ON [o].[order_id] = [od].[order_id]
+--		INNER JOIN [dbo].[Products] AS [p]	--AVERIGUANDO QUE PRODUCTOS LLEVA PK->FK
+--		ON [od].[product_id] = [p].[product_id]
+--		INNER JOIN [dbo].[Measures] AS [m]	--Añadiendo unidad de medida PK->FK
+--		ON [od].[measure_id] = [m].[measure_id]
+--WHERE
+--[o].[order_id]=1;
+
+
+
+--------------------------------------UPDATE
+--SELECT * FROM [dbo].[Products]
+--WHERE product_id=4; --IMPRIMIENDO LAÍZ
+----WHERE product_id=1 --IMPRIMIENDO LIBRETA DE RALLAS
+--	--ACTUALIZANDO UN REGISTRO EN ESPECIFICO
+--		UPDATE [dbo].[Products]
+--			SET [product_description] = 'Lapiz de puntillas finas'
+--			WHERE product_id=4; --producto que afectará
+
+		--UPDATE MASIVO
+		--SELECT * FROM [dbo].[OrderDetails]
+		
+		--UPDATE [dbo].[OrderDetails] --DE ESTA SECCION ACTUALIZARA 
+		--	SET [orderDetail_price]=5 --TODA LA COLUMNA DE OrderDetailPrice
+		
+		--UPDATE [dbo].[OrderDetails]
+		--	SET [orderDetail_price]=99.99
+		--	WHERE product_id=4
+		
+		--UPDATE [dbo].[OrderDetails]
+		--	SET [orderDetail_quantity]=33
+		--	WHERE order_id=2
+
+SELECT * FROM  [dbo].[Orders]
+
+UPDATE [dbo].[Orders]
+	SET [order_date]=GETDATE()
+	WHERE order_id=2;
+
+UPDATE [dbo].[Orders]
+	SET [order_number]=1001
+	WHERE order_id=1
