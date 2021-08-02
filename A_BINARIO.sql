@@ -226,12 +226,47 @@
 		--	SET [orderDetail_quantity]=33
 		--	WHERE order_id=2
 
-SELECT * FROM  [dbo].[Orders]
+--SELECT * FROM  [dbo].[Orders]
 
-UPDATE [dbo].[Orders]
-	SET [order_date]=GETDATE()
-	WHERE order_id=2;
+--UPDATE [dbo].[Orders]
+--	SET [order_date]=GETDATE()
+--	WHERE order_id=2;
 
-UPDATE [dbo].[Orders]
-	SET [order_number]=1001
-	WHERE order_id=1
+
+--UPDATE [dbo].[Orders]
+--	SET [order_number]=1001
+--	WHERE order_id=1
+
+
+------------DELETE
+--SELECT * FROM	[dbo].[Measures] --IDENTIFICANDO
+--WHERE measure_id=1002
+--	DELETE FROM [dbo].[Measures] --BORRANDO REGISTRO
+--	WHERE [measure_id]=5
+
+--DELETE FROM [dbo].[Measures]
+--WHERE [measure_code] = 'kGz'
+
+--	DELETE FROM [dbo].[Measures]
+--	WHERE [measure_id]=1003
+
+--DELETE FROM [dbo].[Measures]
+--WHERE measure_id=1 --no puede eliminar(conflicto), ya que tiene información ligada a otras tablas
+
+--TRATANDO DE ELIMINAR ORDEN CON REFERENCIAS ()
+SELECT * FROM [dbo].[Orders]
+WHERE order_id=2
+
+SELECT * FROM [dbo].[OrderDetails]
+WHERE order_id=2
+	
+	DELETE  FROM [dbo].[Orders] --CONFLICTO DE REFERENCIA
+	WHERE order_id=2
+
+--EVITANDO CONFLICTO 
+--PARA ELLO ELIMINAMOS EN DONDE ESTAN REFERENCIADAS
+DELETE FROM [dbo].[OrderDetails]
+WHERE order_id=2
+	--SEGUIDO ELIMINANDO LA ORDEN DE RAIZ
+	DELETE FROM [dbo].[Orders]
+	WHERE order_id=2
