@@ -98,11 +98,72 @@ USE [A_BINARIO]
 --[e].[employee_createdDate] DESC
 
 
----------------------------------------------------DISTINCT
+--------------------------------------------------------------------------------------------------------------------------------------------DISTINCT
 
 SELECT 
 	DISTINCT [e].[employee_salary] --MOSTRANDO LOS DIVERSOS SALARIOS QUE SE OTORGAN(MO REPETICIONES)
 FROM [dbo].[Employees] AS [e]
 GO
 SELECT * FROM [dbo].[Employees];
+
+
+
+
+
+
+
+-----------------------------------------------------------OPERADORES DE COMPARACIÓN 
+														----  =, >, <, <=, >=, <> (!)
+
+--SELECT * 
+--FROM [dbo].[Employees] AS [e]
+--WHERE 
+--	--[e].[employ_positionName] = 'Ventas menudeo'
+--	--[e].[employ_salary] = 211;
+--	[e].employee_name = 'Axwel '
+
+---------------------------------------mayor que >
+--SELECT * 
+
+--FROM [dbo].[Employees] AS [e]
+--WHERE
+--	--[e].[employ_salary]>500 ---FILTRADO 
+--	[e].[employ_salary]<500
+--ORDER BY                        ----ORDEN DEACUERDO A:
+--	[e].[employee_name] DESC
+
+--SELECT * 
+
+--FROM [dbo].[Employees] AS [e]
+--WHERE
+--	--[e].[employ_salary] >=400
+--	[e].[employ_salary] <= 400
+--	ORDER BY 
+--	[e].[employ_salary] DESC
+
+
+------------------------------------DIFERENTE A <>
+
+--SELECT * 
+
+--FROM [dbo].[Employees] AS [e]
+--WHERE 
+--	[e].[employ_salary] <> 400  --EXCEPTO QUIENES RECIBEN 400
+--	ORDER BY
+--	[e].[employ_salary] DESC
+
+--SELECT * 
+--FROM [dbo].[Employees] AS [e]
+--WHERE
+--	--[e].[employ_birthday] = '1995-05-20' --FILTRO FECHA EN ESPECIFICO
+--	[e].[employ_birthday] <= '1995-05-31'  --FILTRO, QUIENES NACIERON POR DEBAJO DE ESTA FECHA
+--ORDER BY 
+--	[e].[employ_birthday] DESC
+	
+SELECT * 
+FROM [dbo].[Employees] AS [e]
+WHERE 
+	[e].[emply_gender]= 1  --FILTRO POR MASCULINO, EN ORDEN DE QUIEN  GANE MAS
+	ORDER BY 
+	[e].[employ_salary] DESC
 
