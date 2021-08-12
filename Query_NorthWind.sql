@@ -83,33 +83,94 @@ GO
 -- Encontrar las 'ordenes que tardaron más de 2 dias en entregar despues de ser realizadas por el 'usuario, donde el valor sea mayor a 10000
 -- Mostrar número  de dias, fecha de la orden , CustomerID y el pais de envio
 
--- Select rows from a Table or View '[dbo].[Orders]' in schema '[dbo]'
-SELECT  
-O.OrderID
-,O.CustomerID
-,O.OrderDate
-,O.ShippedDate
-,O.ShipCountry
--- calculado la diferencia de dias
-                --Fx(ESCANEAR DIAS, MOTH, AGE) --COMPARANDO 2 VAR    
-,DATEDIFF(DAY, [OrderDate],[ShippedDate]) AS Duration_to_ship
-,SUM(OD.Quantity*OD.UnitPrice) AS [Total Sale Amount]
-FROM [dbo].[Orders] AS O
-INNER JOIN [Order Details] AS OD 
-        ON OD.OrderID= O.OrderID
-WHERE 
-DATEDIFF(DAY, [OrderDate],[ShippedDate]) > 2 --CONDICIONANDO LAS VISTAS DE LA DEFERENCIA DE DIAS
+-- -- Select rows from a Table or View '[dbo].[Orders]' in schema '[dbo]'
+-- SELECT  
+-- O.OrderID
+-- ,O.CustomerID
+-- ,O.OrderDate
+-- ,O.ShippedDate
+-- ,O.ShipCountry
+-- -- calculado la diferencia de dias
+--                 --Fx(ESCANEAR DIAS, MOTH, AGE) --COMPARANDO 2 VAR    
+-- ,DATEDIFF(DAY, [OrderDate],[ShippedDate]) AS Duration_to_ship
+-- ,SUM(OD.Quantity*OD.UnitPrice) AS [Total Sale Amount]
+-- FROM [dbo].[Orders] AS O
+-- INNER JOIN [Order Details] AS OD 
+--         ON OD.OrderID= O.OrderID
+-- WHERE 
+-- DATEDIFF(DAY, [OrderDate],[ShippedDate]) > 2 --CONDICIONANDO LAS VISTAS DE LA DEFERENCIA DE DIAS
 
-GROUP BY --necesario para la agrupacion de las 'SUM
-        O.OrderID
-        ,O.CustomerID
-        ,O.OrderDate
-        ,O.ShippedDate  
-        ,O.ShipCountry
-        -- ORDER BY 
-        -- Duration_to_ship DESC
+-- GROUP BY --necesario para la agrupacion de las 'SUM
+--         O.OrderID
+--         ,O.CustomerID
+--         ,O.OrderDate
+--         ,O.ShippedDate  
+--         ,O.ShipCountry
+--         -- ORDER BY 
+--         -- Duration_to_ship DESC
 
-HAVING SUM(OD.Quantity*OD.UnitPrice) > 10000
-ORDER BY 
-Duration_to_ship ASC
-,ShipCountry 
+-- HAVING SUM(OD.Quantity*OD.UnitPrice) > 10000
+-- ORDER BY 
+-- Duration_to_ship ASC
+-- ,ShipCountry 
+
+-- SELECT                  -- para sacar la dif de dias    --visualizar pais en que se envio.................................................
+-- o.OrderID, CustomerID, o.OrderDate, o.ShippedDate, o.ShipCountry
+-- ,DATEDIFF(DAY, OrderDate, ShippedDate) as Duration_to_ship
+-- FROM Orders as o
+-- INNER JOIN [Order Details] as od
+--         ON od.OrderID = o.OrderID
+-- --dif de dias
+
+
+                        -- SELECT 
+                        -- o.OrderID , o.CustomerID , o.OrderDate, o.ShippedDate, o.ShipCountry
+                        -- -- ,od.UnitPrice, od.Quantity
+                        -- --caldulando la dif de dias ordenes y entregas
+                        -- -- ,DATEDIFF(DAY, o.ShippedDate, o.OrderDate) as DarationToShip
+                        -- ,DATEDIFF(DAY, o.OrderDate, o.ShippedDate) as DarationToShip2
+                        -- --multiplicando cantidades por precios para ver que sea mayor a 10k..................................................................
+                        --         ,SUM(od.Quantity * od.UnitPrice) as TotalSellAmound
+                        
+                        -- from Orders as o
+                        -- INNER JOIN [dbo].[Order Details] as od
+                        --         ON od.OrderID = o.OrderID
+                        -- WHERE
+                        -- DATEDIFF(DAY, o.OrderDate, o.ShippedDate) > 2
+                        -- GROUP BY
+                        -- o.OrderID , o.CustomerID , o.OrderDate, o.ShippedDate, o.ShipCountry
+                        -- order BY DarationToShip2 ASC ---mostrando resultados mayores a 2 dias
+                                
+                        
+--------------mostrando que sea moyor a 10k
+select 
+o.OrderID
+,o.CustomerID
+,o.OrderDate
+,o.ShippedDate
+,o.ShipCountry 
+
+,DATEDIFF(DAY, o.OrderDate, o.ShippedDate) as DurationToShip
+,SUM([Quantity]*[UnitPrice]) as TotalSellAmoun
+
+
+
+
+from Orders as o
+INNER JOIN [Order Details] as od
+        ON o.OrderID = od.OrderID
+
+WHERE
+DATEDIFF(DAY, o.OrderDate, o.ShippedDate) > 2
+
+GROUP BY
+o.OrderID
+,o.CustomerID
+,o.OrderDate
+,o.ShippedDate
+,o.ShipCountry 
+
+HAVING SUM([Quantity]*[UnitPrice]) > 10000 -------------------------mostrando mayor a 10k
+
+        ORDER BY
+        DurationToShip asc
