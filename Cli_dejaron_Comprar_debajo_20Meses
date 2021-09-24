@@ -1,0 +1,30 @@
+
+-- ################################### CLIENTES QUE NO HAN COMPRADO LOS ULTIMOS 20 MESES
+--La función MAX() de SQL Server es una función agregada que devuelve el valor máximo en un conjunto de registros.
+
+SELECT
+c.CompanyName
+,MAX(o.OrderDate) --ultima fecha de las ordenes
+-------------------------------------------------------
+--resta         ultimos meses de pedido, fecha actual
+,DATEDIFF(MONTH, MAX(o.OrderDate), GETDATE()) AS [Months since last order]
+        --pidiendo valores en meses
+
+
+FROM [dbo].[Customers] AS c
+    INNER JOIN [dbo].[Orders] AS o
+    ON c.CustomerID = o.CustomerID
+
+GROUP BY
+c.CompanyName
+-- ,o.OrderDate
+-----------------------------condicion, quienes no han comprado en los ultimos meses
+HAVING DATEDIFF(MONTH, MAX(o.OrderDate), GETDATE()) > 20
+
+
+
+
+
+
+
+

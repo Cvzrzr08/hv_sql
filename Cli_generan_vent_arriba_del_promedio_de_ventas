@@ -1,0 +1,26 @@
+-- #################################clientes que generan ventas por arriba del promedio de ventas
+SELECT
+c.CompanyName
+,c.City
+,c.Country
+,SUM(od.Quantity*od.UnitPrice) AS TOTAL
+-- ,o.OrderDate
+
+FROM [dbo].[Customers] AS c
+    INNER JOIN [dbo].[Orders] AS o
+    ON c.CustomerID = o.CustomerID
+    INNER JOIN [dbo].[Order Details] AS od
+    ON o.OrderID = od.OrderID
+    ----------------------------------------------------------------condicion, en el año 2018
+    WHERE YEAR(o.OrderDate) = '2018'
+
+GROUP BY
+c.CompanyName
+,c.City
+,c.Country
+,o.OrderDate
+----------------------------------------------------------condicion: clientes que generaron ventas por arriba del promedio del total de ventas
+HAVING SUM(od.Quantity*od.UnitPrice) > (SELECT AVG(Quantity*UnitPrice) FROM [dbo].[Order Details])
+            --TOTALES > PROMEDIO(AVG) DE VENTAS TOTALES
+ORDER BY TOTAL DESC
+

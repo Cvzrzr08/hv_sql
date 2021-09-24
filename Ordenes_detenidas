@@ -1,0 +1,32 @@
+-- ordenes que tardaron mas de 2 dias
+-- datos a considerar:
+--     -ship city
+--     -ship contry
+
+SELECT
+o.OrderID
+,o.CustomerID
+,o.OrderDate
+,o.ShippedDate
+,o.ShipCountry
+------------------------------- COMPARARION DE DOS VARIANTES, IMPRIMIR: NUM DIAS QUE TARDARON EN ENTREGARSE
+,DATEDIFF(DAY, OrderDate, ShippedDate) AS DURATION_TO_SHIP
+---------------------------------BUSCADO QUE ESTAS ENTREGAS TENGAN UN  VALOR MAYOR DE 10000
+,SUM(od.UnitPrice * od.Quantity) AS [Total sale Among]
+
+FROM [dbo].[Orders] AS o
+INNER JOIN [Order Details] AS od
+    ON o.OrderID = od.OrderID
+
+    WHERE DATEDIFF(DAY, OrderDate, ShippedDate) > 2 -- condicion: en base a dif de los dias, buscando que sea mayor a dos dias
+
+GROUP BY
+o.OrderID
+,o.CustomerID
+,o.OrderDate
+,o.ShippedDate
+,o.ShipCountry
+
+HAVING Sum(od.Quantity *od.UnitPrice) > 10000  ----aplica como condicion como 'Where
+-- HAVING [Total sale Among] > 10000
+ORDER BY DURATION_TO_SHIP ASC

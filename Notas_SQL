@@ -1,0 +1,171 @@
+RENOMBRAR UNA TABLE
+    EXEC sp_rename '', '';
+            EXEC sp_rename '[dbo].[Productos]', '[dbo].[Products]';
+
+
+ELIMINAR TABLAS
+    DROP TABLE [dbo].[test]
+
+
+AGREGAR INFORMACION
+    ALTER TABLE [dbo].[test]
+    ADD STATUS INT --AGREGANDO UNA NUEVA COLUMNA CUANDO ES PALABRA RESERVADA USAR []
+
+    ELIMINAR COLUMNA
+        ALTER TABLE [dbo].[test]
+        DROP COLUMN STATU;  --
+
+
+
+### INSERTA INFORMACION ####
+INSERT INTO tblCustomers (CustomerID, [Last Name], [First Name])
+    VALUES (1, 'Kelly', 'Jill')
+    O
+    INSERT INTO tblCustomers
+    VALUES (1, Kelly, 'Jill', '555-1040', 'someone@microsoft.com')   ---Puede omitir la lista de campos, pero solo si proporciona todos los valores que puede contener el registro.
+                            ##INSERTAR VARIOS DATOS AL MISMO TIEMPO
+                                INSERT INTO [dbo].[meassures]
+                                    (
+                                        [meassure_code]
+                                        ,[meassure_description]
+                                    )
+                                        VALUES
+                                            ('H87', 'Pieza')
+                                            ,('EA','Elemento')
+                                            ,('kg','Kilogramo')
+                                            ,('Lt','Litro')
+
+
+                                            ### INSERTANDON UNA ORDEN Y DE PASO IMPRIMIR NUM DE ORDEN(ID)
+
+                                                INSERT INTO [dbo].[Ordes]
+                                                (
+                                                    [order_number]
+                                                    ,[order_date]
+                                                    ,[order_status]
+                                                OUTPUT INSERTED.order_id
+                                                )
+                                                VALUES
+                                                (
+                                                    1001
+                                                    ,GETDATE()
+                                                    ,1
+                                                )
+                                                    SELECT * FROM [dbo].[Ordes]
+
+
+
+### ELIMINAR INFORMACION ###
+SELECT TOP (1000) [meassure_id]  --IMPRIMIENDO EN COSOLA
+      ,[meassure_code]
+      ,[meassure_description]
+  FROM [BINARIO_AZU].[dbo].[meassures]
+
+  DELETE FROM [dbo].[meassures] --SELECCIONANDO LA TABLA DONDE DESEO ELIMINAR
+  WHERE meassure_id = 4         --REFERENCIA DE DONDE ELIMINARA, 'PUEDE SER CUALQUIER OTRA COLUMNA, PERO MAS RECOMENDABLE POR ID'S
+  DELETE FROM [dbo].[meassures]
+  WHERE meassure_id = 3
+  DELETE FROM [dbo].[meassures]
+  WHERE meassure_id = 2
+
+
+### SELECCIONANDO DATOS EN ESPECIFICOS EN UNA TABLA
+
+SELECT [orderDetail_number],[orderDetail_quantity],[orderDetail_price]
+FROM [dbo].[OrderDetails]
+WHERE [orderDetail_price] >=25
+
+
+
+
+############################top 10 de ventas#######################################
+---VARIABLES A CONSIDERAR VINIENDO DE ORDER Details --ORDENES DE COMPRA
+    -QUANTIty
+    -ProductID
+use Northwind;
+GO
+SELECT
+OD.ProductID
+,sum(OD.Quantity) as [Units Sold] --palabras reservadas?, es mas por los espacios del titulo
+FROM [Order Details] AS OD
+GROUP BY OD.ProductID ---para que funciones la suma de OD.Quantity
+ORDER BY [Units Sold] DESC
+
+##DESCUBRIENDO EL NOMBRE DE LOS PRODUCTOS, PARA ELLO HAY QUE 'INNER JOIN CON LA TABLA PRODUCTS.. A TRAVES DE KEY PROMARY
+use Northwind;
+GO
+SELECT TOP 10
+P.ProductName
+-- OD.ProductID  --SE REMPLAZA
+,sum(OD.Quantity) as [Units Sold]
+FROM [Order Details] AS OD
+INNER JOIN [Products] AS P ---UNION DE LA PK
+    ON OD.ProductID = P.ProductID
+GROUP BY
+-- OD.ProductID, NO ES NECESARIO YA QUE LO SUSTITUIMOS POR :
+P.ProductName
+ORDER BY [Units Sold] DESC
+ --nombre de los productos
+
+
+################################## --PRODUCTO CON EL 2DO PRECIO MAS ALTO EN LA COMPAÑIA
+---VARIABLES A CONSIDERAR VINIENDO DE [PRODUCTS]
+    -ProductID
+    -ProductName
+    -unitPrice  ---por lo del 2do 'PRECIO más alto en la compañia
+SELECT
+P.ProductID
+,P.ProductName
+,P.UnitPrice
+FROM [Products] AS P
+ORDER BY
+UnitPrice DESC
+
+
+#########rank de los productos mas vendidos por ciudad y cantidad/ de EUA, CONSIDERANDO 1ERO LAS CIUDADES RESPETANDO LAS JERARQUIAS DE LAS TABLAS
+
+SELECT
+P.ProductName   -X
+,C.City         -Y
+,OD.Quantity    -Z
+FROM [dbo].[Customers] AS C                 --------HACER LOS INNER JOIN RESPETANDO LOS ENLACES DE LAS TABLAS PARA PODER UNIR LA INFO
+INNER JOIN [dbo].[Orders] AS O
+    ON C.CustomerID = O.CustomerID
+    INNER JOIN [dbo].[Order Details] AS OD
+        ON O.OrderID = OD.OrderID
+        INNER JOIN [dbo].[Products] AS P
+            ON OD.ProductID = P.ProductID
+WHERE C.Country = 'USA'
+ORDER BY OD.Quantity DESC
+
+#########PREPARANDO EL RANK
+
+SELECT
+P.ProductName
+,C.City
+,OD.Quantity       --OPCIONAL/ PARTICIONAR Y ORDENAR DE ACUERDO A CD, FORZADO OVER()/SE PUEDE PONER ORDER BY SIN AFECTAR
+,DENSE_RANK() OVER(PARTITION BY C.city ORDER BY OD.[Quantity] DESC) AS RANK
+FROM [dbo].[Customers] AS C
+INNER JOIN [dbo].[Orders] AS O
+    ON C.CustomerID = O.CustomerID
+    INNER JOIN [dbo].[Order Details] AS OD
+        ON O.OrderID = OD.OrderID
+        INNER JOIN [dbo].[Products] AS P
+            ON OD.ProductID = P.ProductID
+WHERE C.Country = 'USA'
+AND C.City = 'BOISE' ---SELECCIONANDO UNA CD EN ESPECIFICO
+-- ORDER BY OD.Quantity DESC
+ORDER BY RANK
+
+
+
+###############################################ENCONTRAR LAS ORDENES QUE TARDARON MAS DE 2 DIAS EN ENTREGARSE DESPUES DE SER REALIZADAS POR EL USUARIO. DOnde el valor sea mayor a 10 000
+Mostrar el:
+-numeros de dias
+-fecha de la orden
+-customerID
+-pais de envia
+
+
+
+

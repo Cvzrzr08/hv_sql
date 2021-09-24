@@ -1,0 +1,19 @@
+---########### buscar productos que generaron un total del ventas mayo o igual a 30 000 y mostrar las unidades que se vendieron en cada producto, filtrandolas por año(2018=)
+-- ORDERS->ORDES DETAILS-> PRODUCTS
+
+SELECT
+P.ProductName
+,SUM(od.Quantity) AS [Number of unites]
+,SUM(od.Quantity*od.UnitPrice) AS [Total sale Amoung]
+FROM [dbo].[Orders] AS o
+    INNER JOIN [dbo].[Order Details] AS od
+    ON o.OrderID = od.OrderID
+    INNER JOIN [dbo].[Products] AS p_
+    ON od.ProductID = p.ProductID
+    ----------------------------------condicional, para filtro del año
+    WHERE YEAR(O.OrderDate) = '2018'
+
+GROUP BY
+P.ProductName
+
+HAVING SUM(od.Quantity*od.UnitPrice) >= 30000 -------------------segundo condicional tratandolo con un having

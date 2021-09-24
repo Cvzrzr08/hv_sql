@@ -1,0 +1,27 @@
+----------##############################top 10 clientes mas valiosos
+
+SELECT TOP 10
+c.CompanyName
+,c.City
+,c.Country
+,SUM(od.[Quantity]*od.[UnitPrice]) AS [Total sale Amoung]  --Para conoces a los clientes quienes compran más
+,o.OrderDate
+FROM [dbo].[Customers] AS c
+    INNER JOIN [dbo].[Orders] AS o
+    ON C.CustomerID = O.CustomerID
+    INNER JOIN [dbo].[Order Details] AS od
+    ON o.OrderID = od.OrderID
+-------------------------------------CONDICIONANDO, OBTENIENDO INFORMACIÓN DE UN AÑO EN ESPECIFICO
+    WHERE
+    YEAR(o.OrderDate) = '2017'  --viene de la tabla Orders
+    -- MONTH(O.OrderDate) = '12'
+GROUP BY
+c.CompanyName
+,c.City
+,c.Country
+,o.OrderDate --OPCIONAL
+
+ORDER BY
+[Total sale Amoung] DESC
+-- ,o.OrderDate ASC
+

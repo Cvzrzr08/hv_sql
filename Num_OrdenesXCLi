@@ -1,0 +1,26 @@
+-- -- ###############numero de ordenes por cliente
+-- SELECT
+-- c.CompanyName
+-- ,COUNT(O.OrderID) AS [Number of  Orders]
+
+-- FROM [dbo].[Customers] AS c
+--     INNER JOIN [dbo].[Orders] AS o
+--     ON c.CustomerID = o.CustomerID
+
+-- GROUP BY
+-- c.CompanyName
+-- ORDER BY [Number of  Orders] DESC
+
+
+
+
+-- -- ###############forma más recomendada
+SELECT
+c.CompanyName
+------------------aplicandole un subquery
+,(SELECT COUNT([OrderID]) FROM [dbo].[Orders] AS o
+    WHERE c.[CustomerID] = o.[CustomerID]) AS [Numbers of orders]
+
+FROM [dbo].[Customers] AS c
+
+ORDER BY [Numbers of orders] DESC

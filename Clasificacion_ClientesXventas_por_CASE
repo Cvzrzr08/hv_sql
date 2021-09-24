@@ -1,0 +1,32 @@
+clasificacion de los clientes de acuerdo al total de ventas
+>= 30000 nivel 'A
+>= 20000 y < 30000 nivel 'B
+< 20000 nivel 'C
+
+
+
+--###############################clasificacion clientes por ventas
+
+--costumer->>Order Details
+
+SELECT
+C.CompanyName
+,SUM(od.Quantity*od.UnitPrice) AS Total --totales ventas
+-------------------------------clasificacion por casos
+,CASE
+    WHEN SUM(od.Quantity*od.UnitPrice) >= 30000 THEN 'A'
+    WHEN SUM(od.Quantity*od.UnitPrice) < 30000 AND SUM(od.Quantity*od.UnitPrice) >= 20000 THEN 'B'
+    -- WHEN (SUM(od.Quantity*od.UnitPrice)) BETWEEN 30000 AND 20000 THEN 'B' --NO APLICA EL BETWEEN, CHECAR...
+    ELSE 'C'
+    END AS LEVEL
+
+FROM [dbo].[Customers] AS c
+    INNER JOIN [dbo].[Orders] AS o
+    ON c.CustomerID = o.CustomerID
+    INNER JOIN [dbo].[Order Details] AS od
+    ON O.OrderID = OD.OrderID
+
+GROUP BY
+C.CompanyName
+
+ORDER BY [LEVEL] ASC
